@@ -85,7 +85,8 @@ git config --global credential.https://github.com.helper ''
 git config --global --add credential.https://github.com.helper "!$HOME/.pixi/bin/gh auth git-credential"
 
 step "code-server"
-curl -fsSL https://code-server.dev/install.sh | sh
+# Installed by IT's VM template; this only configures it.
+command -v code-server >/dev/null || { echo "code-server not found; VM template too old? Recreate the VM"; exit 1; }
 mkdir -p "$HOME/.config/code-server"
 if [[ ! -f "$HOME/.config/code-server/config.yaml" ]]; then
     (
@@ -99,6 +100,11 @@ EOF
     )
 fi
 code-server --install-extension anthropic.claude-code
+code-server --install-extension sheeptao.pixi
+code-server --install-extension ms-python.python
+code-server --install-extension ms-toolsai.jupyter
+code-server --install-extension fortran-lang.linter-gfortran
+
 sudo systemctl enable --now "code-server@$USER"
 
 step "done"
